@@ -1,64 +1,66 @@
 package com.tobiasekman.model;
 
 import com.tobiasekman.model.entities.Album;
-import com.tobiasekman.model.entities.Genre;
+import com.tobiasekman.model.entities.Artist;
+import com.tobiasekman.model.entities.Song;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
 import java.util.List;
 
-public class GenreDao {
+public class AlbumDao {
 
     private final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("artist_management");
 
-    public void add(Genre genre) {
+    public void add(Album album) {
+
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        entityManager.persist(genre);
+        entityManager.persist(album);
         entityManager.getTransaction().commit();
         entityManager.close();
 
     }
 
-    public void update(Genre genre, Album album) {
+    public List<Album> getAll() {
+
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        List<Album> albums = entityManager.createQuery("SELECT a FROM Album a").getResultList();
+        entityManager.close();
+        return albums;
+
+    }
+
+    public void update(Album album, Song song) {
 
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        Genre updatedGenre = entityManager.find(Genre.class, genre.getId());
-        updatedGenre.addAlbum(album);
+        Album updatedAlbum = entityManager.find(Album.class, album.getId());
+        updatedAlbum.addSong(song);
         entityManager.getTransaction().commit();
         entityManager.close();
 
     }
 
-    public List<Genre> getAll() {
+    public void delete(Album album) {
 
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        List<Genre> genres = entityManager.createQuery("SELECT g FROM Genre g").getResultList();
+        entityManager.getTransaction().begin();
+        entityManager.remove(entityManager.merge(album));
+        entityManager.getTransaction().commit();
         entityManager.close();
-        return genres;
 
     }
 
-    public Genre findById(int id) {
+    public Album findByName(String name) {
 
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        Genre genre = entityManager.find(Genre.class, id);
-        entityManager.close();
-        return genre;
-
-    }
-
-    public Genre findByName(String genreName) {
-
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        Genre genre = (Genre) entityManager.createQuery("SELECT g FROM Genre g WHERE g.genre = :genre")
-                .setParameter("genre", genreName)
+        Album album = (Album) entityManager.createQuery("SELECT a FROM Album a WHERE a.title = :name")
+                .setParameter("name", name)
                 .getSingleResult();
         entityManager.close();
-        return genre;
+        return album;
 
     }
-
 }

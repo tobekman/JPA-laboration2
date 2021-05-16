@@ -1,7 +1,6 @@
 package com.tobiasekman.model;
 
-import com.tobiasekman.entity.Album;
-import com.tobiasekman.entity.Artist;
+import com.tobiasekman.model.entities.Artist;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -21,7 +20,7 @@ public class ArtistDao {
 
     }
 
-    public List<Artist> getArtists() {
+    public List<Artist> getAll() {
 
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         List<Artist> artists = entityManager.createQuery("SELECT a FROM Artist a").getResultList();
@@ -30,43 +29,41 @@ public class ArtistDao {
 
     }
 
-    public void updateArtist(Artist artist) {
+    public void update(Artist artist) {
 
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        Artist updatedArtist = entityManager.find(Artist.class, artist.getId());
-        updatedArtist.setName(artist.getName());
-        entityManager.getTransaction().commit();
-        entityManager.close();
-
-    }
-    public void addAlbum(int id, Album album) {
-
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
-        Artist updatedArtist = entityManager.find(Artist.class, id);
-        updatedArtist.addAlbum(album);
+        entityManager.merge(artist);
         entityManager.getTransaction().commit();
         entityManager.close();
 
     }
 
-
-    public void deleteArtist(int id) {
+    public void delete(Artist artist) {
 
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        Artist artist = entityManager.find(Artist.class, id);
-        entityManager.remove(artist);
+        entityManager.remove(entityManager.merge(artist));
         entityManager.getTransaction().commit();
         entityManager.close();
 
     }
 
-    public Artist findArtistById(int id) {
+    public Artist findById(int id) {
 
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         Artist artist = entityManager.find(Artist.class, id);
+        entityManager.close();
+        return artist;
+
+    }
+
+    public Artist findByName(String name) {
+
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        Artist artist = (Artist) entityManager.createQuery("SELECT a FROM Artist a WHERE a.name = :name")
+                .setParameter("name", name)
+                .getSingleResult();
         entityManager.close();
         return artist;
 

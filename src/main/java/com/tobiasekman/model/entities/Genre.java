@@ -1,6 +1,5 @@
-package com.tobiasekman.entity;
+package com.tobiasekman.model.entities;
 
-import com.tobiasekman.entity.Artist;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ public class Genre {
     private String genre;
 
     @ManyToMany(mappedBy = "genres", fetch = FetchType.EAGER)
-    private List<Artist> artists;
+    private List<Album> artists;
 
     public Genre() {
     }
@@ -36,16 +35,20 @@ public class Genre {
         return id;
     }
 
-    public List<Artist> getArtists() {
+    public List<Album> getAlbums() {
         if(artists == null) {
             artists = new ArrayList<>();
         }
         return this.artists;
     }
 
+    public void addAlbum(Album album) {
+        getAlbums().add(album);
+    }
+
     @Override
     public String toString() {
-        return "[" + getId() + "] " + getGenre();
+        return getGenre();
     }
 }
 

@@ -1,64 +1,59 @@
 package com.tobiasekman.model;
 
 import com.tobiasekman.model.entities.Album;
-import com.tobiasekman.model.entities.Genre;
+import com.tobiasekman.model.entities.Artist;
+import com.tobiasekman.model.entities.Song;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
 import java.util.List;
 
-public class GenreDao {
+public class SongDao {
 
     private final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("artist_management");
 
-    public void add(Genre genre) {
+    public void add(Song song) {
+
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        entityManager.persist(genre);
+        entityManager.persist(song);
+        entityManager.getTransaction().commit();
+        entityManager.close();
+    }
+
+    public void delete(Song song) {
+
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        entityManager.remove(entityManager.merge(song));
         entityManager.getTransaction().commit();
         entityManager.close();
 
     }
 
-    public void update(Genre genre, Album album) {
+    public List<Song> getAll() {
 
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
-        Genre updatedGenre = entityManager.find(Genre.class, genre.getId());
-        updatedGenre.addAlbum(album);
-        entityManager.getTransaction().commit();
+        List<Song> songs = entityManager.createQuery("SELECT s FROM Song s").getResultList();
         entityManager.close();
-
+        return songs;
     }
 
-    public List<Genre> getAll() {
-
+    public Song findByName(String title) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        List<Genre> genres = entityManager.createQuery("SELECT g FROM Genre g").getResultList();
-        entityManager.close();
-        return genres;
-
-    }
-
-    public Genre findById(int id) {
-
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        Genre genre = entityManager.find(Genre.class, id);
-        entityManager.close();
-        return genre;
-
-    }
-
-    public Genre findByName(String genreName) {
-
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        Genre genre = (Genre) entityManager.createQuery("SELECT g FROM Genre g WHERE g.genre = :genre")
-                .setParameter("genre", genreName)
+        return (Song) entityManager.createQuery("SELECT s FROM Song s WHERE s.title = :title")
+                .setParameter("title", title)
                 .getSingleResult();
-        entityManager.close();
-        return genre;
+    }
 
+    public List<Song> findByArtist(String artist) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        List<Song> songs = entityManager.createQuery("SELECT s FROM Song s WHERE s.artist.name = :name")
+                .setParameter("name", artist)
+                .getResultList();
+        entityManager.close();
+        return songs;
     }
 
 }

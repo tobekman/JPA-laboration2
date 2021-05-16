@@ -1,131 +1,120 @@
 package com.tobiasekman;
 
-import com.tobiasekman.entity.Album;
-import com.tobiasekman.entity.Artist;
-import com.tobiasekman.entity.ArtistInfo;
-import com.tobiasekman.entity.Genre;
+import com.tobiasekman.model.AlbumDao;
 import com.tobiasekman.model.ArtistDao;
 import com.tobiasekman.model.GenreDao;
+import com.tobiasekman.model.entities.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class AddSomeData {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+
+        addGenres();
+        addArtists();
+        addAlbums();
+        addSongs();
+
+    }
+
+    private static void addGenres() throws IOException {
 
         GenreDao genreDao = new GenreDao();
+
+        BufferedReader artistReader = Files.newBufferedReader(Paths.get("src/main/resources/genres.csv"));
+
+        String line;
+        while ((line = artistReader.readLine()) != null) {
+
+            genreDao.add(new Genre(line));
+
+        }
+
+
+
+    }
+
+    private static void addArtists() throws IOException {
+
         ArtistDao artistDao = new ArtistDao();
 
-        Genre genre1 = new Genre("Pop");
-        Genre genre2 = new Genre("Rock");
-        Genre genre3 = new Genre("Rap");
-        Genre genre4 = new Genre("Soul");
-        Genre genre5 = new Genre("Metal");
-        Genre genre6 = new Genre("RnB");
-        Genre genre7 = new Genre("EDM");
+        BufferedReader artistReader = Files.newBufferedReader(Paths.get("src/main/resources/artists.csv"));
 
-        genreDao.add(genre1);
-        genreDao.add(genre2);
-        genreDao.add(genre3);
-        genreDao.add(genre4);
-        genreDao.add(genre5);
-        genreDao.add(genre6);
-        genreDao.add(genre7);
+        String line;
+        while ((line = artistReader.readLine()) != null) {
 
-        ArtistInfo madonnaInfo = new ArtistInfo("Madonna Louise Ciccone",
-                63,
-                "Singer, songwriter from Bay City, Michigan, USA");
+            String[] column = line.split("-",4);
 
-        List<Genre> madonnaGenres = new ArrayList<>();
-        madonnaGenres.add(genre1);
-        madonnaGenres.add(genre2);
+            Artist artist = new Artist();
+            artist.setName(column[0]);
+            ArtistInfo artistInfo = new ArtistInfo();
+            artistInfo.setFullName(column[1]);
+            artistInfo.setAge(Integer.parseInt(column[2]));
+            artistInfo.setBio(column[3]);
+            artist.setArtistInfo(artistInfo);
 
-        Artist madonna = new Artist("Madonna", madonnaInfo, madonnaGenres);
+            artistDao.add(artist);
 
-        Album madonna1 = new Album("Madonna",1983);
-        Album madonna2 = new Album("Like a Virgin",1984);
-        Album madonna3 = new Album("Music",2000);
-        Album madonna4 = new Album("American Life",2003);
+        }
+    }
 
-        madonna.addAlbum(madonna1);
-        madonna.addAlbum(madonna2);
-        madonna.addAlbum(madonna3);
-        madonna.addAlbum(madonna4);
+    private static void addAlbums() throws IOException {
 
-        artistDao.add(madonna);
+        AlbumDao albumDao = new AlbumDao();
+        ArtistDao artistDao = new ArtistDao();
+        GenreDao genreDao = new GenreDao();
 
-        ArtistInfo markoolioInfo = new ArtistInfo("Marko Kristian Lehtosalo",
-                45,
-                "Swedish-Finnish rapper, singer living in Stockholm");
+        BufferedReader artistReader = Files.newBufferedReader(Paths.get("src/main/resources/albums.csv"));
 
-        List<Genre> markoolioGenre = new ArrayList<>();
-        markoolioGenre.add(genre3);
-        markoolioGenre.add(genre1);
+        String line;
+        while ((line = artistReader.readLine()) != null) {
 
-        Artist markoolio = new Artist("Markoolio", markoolioInfo, markoolioGenre);
+            String[] column = line.split("-",4);
 
-        Album markoolio1 = new Album("Tjock och Lycklig", 2001);
-        Album markoolio2 = new Album("Värsta Plattan", 2007);
-        Album markoolio3 = new Album("Jag är Markoolio", 2012);
+            Artist artist = artistDao.findByName(column[0]);
 
-        markoolio.addAlbum(markoolio1);
-        markoolio.addAlbum(markoolio2);
-        markoolio.addAlbum(markoolio3);
+            String title = column[1];
 
-        artistDao.add(markoolio);
+            int year = Integer.parseInt(column[2]);
 
-        ArtistInfo metallicaInfo = new ArtistInfo("Metallica",
-                40,
-                "The band was formed in 1981 in Los Angeles by vocalist/guitarist James Hetfield " +
-                        "and drummer Lars Ulrich," +
-                        " and has been based in San Francisco for most of its career.");
+            Album album = new Album(title, year);
 
-        List<Genre> metallicaGenre = new ArrayList<>();
-        metallicaGenre.add(genre5);
+            Genre genre = genreDao.findByName(column[3]);
 
-        Artist metallica = new Artist("Metallica", metallicaInfo, metallicaGenre);
+            album.setArtist(artist);
+            album.addGenre(genre);
 
-        Album metallica1 = new Album("Kill 'Em All", 1983);
-        Album metallica2 = new Album("Master of Puppets", 1986);
-        Album metallica3 = new Album("Metallica", 1991);
-        Album metallica4 = new Album("Reload", 1997);
-        Album metallica5 = new Album("Hardwired... to Self-Destruct", 2016);
+            albumDao.add(album);
+            genreDao.update(genre, album);
+        }
+    }
 
-        metallica.addAlbum(metallica1);
-        metallica.addAlbum(metallica2);
-        metallica.addAlbum(metallica3);
-        metallica.addAlbum(metallica4);
-        metallica.addAlbum(metallica5);
+    private static void addSongs() throws IOException {
 
-        artistDao.add(metallica);
+        AlbumDao albumDao = new AlbumDao();
+        ArtistDao artistDao = new ArtistDao();
 
-        ArtistInfo jayzInfo = new ArtistInfo("Shawn Corey Carter",
-                52,
-                "American rapper, songwriter, record executive, businessman, and record producer. " +
-                        "He is widely regarded as one of the most influential hip-hop artists in history.");
+        BufferedReader artistReader = Files.newBufferedReader(Paths.get("src/main/resources/songs.csv"));
 
-        List<Genre> jayzGenre = new ArrayList<>();
-        jayzGenre.add(genre3);
+        String line;
 
-        Artist jayz = new Artist("Jay Z", jayzInfo, jayzGenre);
+        while ((line = artistReader.readLine()) != null) {
 
-        Album jayz1 = new Album("Reasonable Doubt", 1996);
-        Album jayz2 = new Album("Vol. 2... Hard Knock Life", 1998);
-        Album jayz3 = new Album("The Blueprint", 2001);
-        Album jayz4 = new Album("The Black Album", 2003);
-        Album jayz5 = new Album("American Gangster", 2007);
-        Album jayz6 = new Album("4:44", 2017);
+            String[] column = line.split("-",4);
 
-        jayz.addAlbum(jayz1);
-        jayz.addAlbum(jayz2);
-        jayz.addAlbum(jayz3);
-        jayz.addAlbum(jayz4);
-        jayz.addAlbum(jayz5);
-        jayz.addAlbum(jayz6);
+            Artist artist = artistDao.findByName(column[0]);
+            String title = column[1];
+            int length = Integer.parseInt(column[2]);
+            Song song = new Song(title, length, artist);
+            Album album = albumDao.findByName(column[3]);
 
-        artistDao.add(jayz);
+            albumDao.update(album, song);
 
+        }
 
     }
 }
