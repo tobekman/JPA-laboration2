@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Album {
+public class Album implements Comparable<Album> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,7 +24,6 @@ public class Album {
     private List<Genre> genres;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "album_id")
     private List<Song> songs;
 
     public Album() {
@@ -89,5 +88,15 @@ public class Album {
     @Override
     public String toString() {
         return getTitle() + ", " + getYear() + "\n  " + getGenres();
+    }
+
+    @Override
+    public int compareTo(Album a) {
+        if(this.getYear() > a.getYear()) {
+            return 1;
+        } else if (this.getYear() < a.getYear()) {
+            return -1;
+        }
+        return 0;
     }
 }

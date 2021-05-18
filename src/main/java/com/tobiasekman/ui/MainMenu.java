@@ -12,6 +12,7 @@ public class MainMenu {
             System.out.println("[2] Manage Albums");
             System.out.println("[3] Manage Songs");
             System.out.println("[4] Manage Genres");
+            System.out.println("[5] Statistics");
 
             System.out.println("[0] Exit");
 
@@ -23,6 +24,7 @@ public class MainMenu {
                 case 2 -> AlbumMenu.menu();
                 case 3 -> SongMenu.menu();
                 case 4 -> GenreMenu.menu();
+                case 5 -> StatisticsMenu.menu();
                 default -> loop = false;
             }
         }

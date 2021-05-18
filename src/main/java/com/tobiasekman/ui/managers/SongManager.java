@@ -26,15 +26,15 @@ public class SongManager {
         int length = intScanner();
         Song song = new Song(title, length, artist);
 
-        System.out.println("Add song to album?");
-        System.out.println("[1] Yes");
-        System.out.println("[2] No");
+        System.out.println("[1] Add song to album");
+        System.out.println("[2] Single");
 
         if(intScanner() == 1) {
             System.out.print("Name of album: ");
             Album album = albumDao.findByName(stringScanner());
-
-            albumDao.update(album, song);
+            song.setAlbum(album);
+            album.addSong(song);
+            albumDao.update(album);
         } else {
             songDao.add(song);
         }
@@ -42,6 +42,7 @@ public class SongManager {
     }
 
     public void deleteSong() {
+
         System.out.print("Song title: ");
         Song song = songDao.findByName(stringScanner());
         songDao.delete(song);

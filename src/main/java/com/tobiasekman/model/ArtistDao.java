@@ -1,5 +1,6 @@
 package com.tobiasekman.model;
 
+import com.tobiasekman.model.entities.Album;
 import com.tobiasekman.model.entities.Artist;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;

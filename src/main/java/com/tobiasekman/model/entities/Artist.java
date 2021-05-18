@@ -79,6 +79,14 @@ public class Artist {
         getSongs().add(song);
     }
 
+    public void removeAlbum(Album album) {
+    getAlbums().remove(album);
+    }
+
+    public void removeSong(Song song) {
+        getSongs().remove(song);
+    }
+
     @Override
     public String toString() {
         return "  ID: " + getId() + " - " +

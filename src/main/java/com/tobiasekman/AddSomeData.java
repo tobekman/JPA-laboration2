@@ -89,7 +89,7 @@ public class AddSomeData {
             album.addGenre(genre);
 
             albumDao.add(album);
-            genreDao.update(genre, album);
+            genreDao.update(genre);
         }
     }
 
@@ -111,8 +111,8 @@ public class AddSomeData {
             int length = Integer.parseInt(column[2]);
             Song song = new Song(title, length, artist);
             Album album = albumDao.findByName(column[3]);
-
-            albumDao.update(album, song);
+            album.addSong(song);
+            albumDao.update(album);
 
         }
 

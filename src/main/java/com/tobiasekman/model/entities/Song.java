@@ -3,7 +3,7 @@ package com.tobiasekman.model.entities;
 import jakarta.persistence.*;
 
 @Entity
-public class Song {
+public class Song implements Comparable<Song> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -13,6 +13,9 @@ public class Song {
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Artist artist;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Album album;
 
     public Song() {
     }
@@ -39,6 +42,22 @@ public class Song {
         this.length = length;
     }
 
+    public Artist getArtist() {
+        return artist;
+    }
+
+    public void setArtist(Artist artist) {
+        this.artist = artist;
+    }
+
+    public Album getAlbum() {
+        return album;
+    }
+
+    public void setAlbum(Album album) {
+        this.album = album;
+    }
+
     public String getDuration() {
         int minutes = length / 60;
         int seconds = length % 60;
@@ -49,5 +68,16 @@ public class Song {
     @Override
     public String toString() {
         return title + ", " + getDuration();
+    }
+
+    @Override
+    public int compareTo(Song s) {
+
+        if(this.getLength() > s.getLength()) {
+            return 1;
+        } else if (this.getLength() < s.getLength()) {
+            return -1;
+        }
+        return 0;
     }
 }

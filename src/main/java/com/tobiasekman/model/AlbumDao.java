@@ -1,8 +1,6 @@
 package com.tobiasekman.model;
 
 import com.tobiasekman.model.entities.Album;
-import com.tobiasekman.model.entities.Artist;
-import com.tobiasekman.model.entities.Song;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -32,12 +30,11 @@ public class AlbumDao {
 
     }
 
-    public void update(Album album, Song song) {
+    public void update(Album album) {
 
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        Album updatedAlbum = entityManager.find(Album.class, album.getId());
-        updatedAlbum.addSong(song);
+        entityManager.merge(album);
         entityManager.getTransaction().commit();
         entityManager.close();
 

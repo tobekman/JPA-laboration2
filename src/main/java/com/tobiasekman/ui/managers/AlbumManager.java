@@ -92,8 +92,10 @@ public class AlbumManager {
 
         System.out.print("Title: ");
         Album album = albumDao.findByName(stringScanner());
-
+        Artist artist = artistDao.findByName(album.getArtist().getName());
         albumDao.delete(album);
+        artist.removeAlbum(album);
+        artistDao.update(artist);
 
     }
 

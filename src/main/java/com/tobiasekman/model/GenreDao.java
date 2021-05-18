@@ -21,12 +21,11 @@ public class GenreDao {
 
     }
 
-    public void update(Genre genre, Album album) {
+    public void update(Genre genre) {
 
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        Genre updatedGenre = entityManager.find(Genre.class, genre.getId());
-        updatedGenre.addAlbum(album);
+        entityManager.merge(genre);
         entityManager.getTransaction().commit();
         entityManager.close();
 

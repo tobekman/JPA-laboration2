@@ -14,7 +14,7 @@ public class Genre {
     private String genre;
 
     @ManyToMany(mappedBy = "genres", fetch = FetchType.EAGER)
-    private List<Album> artists;
+    private List<Album> albums;
 
     public Genre() {
     }
@@ -36,10 +36,10 @@ public class Genre {
     }
 
     public List<Album> getAlbums() {
-        if(artists == null) {
-            artists = new ArrayList<>();
+        if(albums == null) {
+            albums = new ArrayList<>();
         }
-        return this.artists;
+        return this.albums;
     }
 
     public void addAlbum(Album album) {
