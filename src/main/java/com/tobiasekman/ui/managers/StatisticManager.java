@@ -7,12 +7,10 @@ import com.tobiasekman.model.entities.Artist;
 import com.tobiasekman.model.entities.Genre;
 import com.tobiasekman.model.entities.Song;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-import static com.tobiasekman.ui.MyScanner.*;
+import static com.tobiasekman.ui.MyScanner.stringScanner;
 
 public class StatisticManager {
 
@@ -20,66 +18,74 @@ public class StatisticManager {
     GenreDao genreDao = new GenreDao();
 
     public void artistStats() {
+        try {
 
-        System.out.print("Artist: ");
-        Artist artist = artistDao.findByName(stringScanner());
+            System.out.print("Artist: ");
+            Artist artist = artistDao.findByName(stringScanner());
 
-        List<Album> albums = artist.getAlbums();
-        List<Song> songs = artist.getSongs();
+            List<Album> albums = artist.getAlbums();
+            List<Song> songs = artist.getSongs();
 
-        Song longest;
-        Song shortest;
-        Album newest;
-        Album oldest;
+            Song longest;
+            Song shortest;
+            Album newest;
+            Album oldest;
 
-        if(albums.size() > 1 && songs.size() > 0) {
+            if (albums.size() > 1 && songs.size() > 0) {
 
-            newest = Collections.max(albums);
-            oldest = Collections.min(albums);
-            longest = Collections.max(songs);
-            shortest = Collections.min(songs);
-
-            System.out.println("\n  -" + artist.getName()+ "-" +
-                    "\n  Albums: " + albums.size() +
-                    "\n  First release: " + oldest.getTitle() + ", " + oldest.getYear() +
-                    "\n  Latest release: " + newest.getTitle() + ", " +newest.getYear() +
-                    "\n  Songs: " + songs.size() +
-                    "\n  Longest song: " + longest.getTitle() + ", " + longest.getDuration() +
-                    "\n  Shortest song: " + shortest.getTitle() + ", " + shortest.getDuration());
-
-        } else if (albums.size() == 1) {
-
-            System.out.println("\n  -" + artist.getName()+ "-" +
-                    "\n  Album: " + albums.size() +
-                    "\n  Released: " + albums.get(0).getYear());
-
-            if(songs.size() > 0) {
+                newest = Collections.max(albums);
+                oldest = Collections.min(albums);
                 longest = Collections.max(songs);
                 shortest = Collections.min(songs);
 
-                System.out.println("\n  Songs: " + songs.size() +
+                System.out.println("\n  -" + artist.getName() + "-" +
+                        "\n  Albums: " + albums.size() +
+                        "\n  First release: " + oldest.getTitle() + ", " + oldest.getYear() +
+                        "\n  Latest release: " + newest.getTitle() + ", " + newest.getYear() +
+                        "\n  Songs: " + songs.size() +
                         "\n  Longest song: " + longest.getTitle() + ", " + longest.getDuration() +
                         "\n  Shortest song: " + shortest.getTitle() + ", " + shortest.getDuration());
+
+            } else if (albums.size() == 1) {
+
+                System.out.println("\n  -" + artist.getName() + "-" +
+                        "\n  Album: " + albums.size() +
+                        "\n  Released: " + albums.get(0).getYear());
+
+                if (songs.size() > 0) {
+                    longest = Collections.max(songs);
+                    shortest = Collections.min(songs);
+
+                    System.out.println("\n  Songs: " + songs.size() +
+                            "\n  Longest song: " + longest.getTitle() + ", " + longest.getDuration() +
+                            "\n  Shortest song: " + shortest.getTitle() + ", " + shortest.getDuration());
+                } else {
+                    System.out.println("  Songs: 0");
+                }
+
+
+            } else if (songs.size() > 0) {
+
+                longest = Collections.max(songs);
+                shortest = Collections.min(songs);
+
+                System.out.println("\n  -" + artist.getName() + "-" +
+                        "\n  Songs: " + songs.size() +
+                        "\n  Longest song: " + longest.getTitle() + ", " + longest.getDuration() +
+                        "\n  Shortest song: " + shortest.getTitle() + ", " + shortest.getDuration());
+
             } else {
-                System.out.println("  Songs: 0");
+
+                System.out.println("\n  " + artist.getName() + " doesn't have any albums or songs");
+
             }
 
+        } catch (Exception e) {
 
-        } else if (songs.size() > 0) {
-
-            longest = Collections.max(songs);
-            shortest = Collections.min(songs);
-
-            System.out.println("\n  -" + artist.getName() + "-" +
-                    "\n  Songs: " + songs.size()+
-                    "\n  Longest song: " + longest.getTitle() + ", " + longest.getDuration() +
-                    "\n  Shortest song: " + shortest.getTitle() + ", " + shortest.getDuration());
-
-        } else {
-
-            System.out.println("\n  " + artist.getName() + " doesn't have any albums or songs");
+            System.out.println("Coudln't find artist");
 
         }
+
 
     }
 
@@ -93,7 +99,6 @@ public class StatisticManager {
 
         System.out.println("\nAmount of albums in each genre\n");
         genres.forEach(g -> System.out.println(g.getGenre() + ": " + g.getAlbums().size()));
-
 
     }
 

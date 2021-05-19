@@ -4,9 +4,9 @@ import com.tobiasekman.model.GenreDao;
 import com.tobiasekman.model.entities.Album;
 import com.tobiasekman.model.entities.Genre;
 
-import static com.tobiasekman.ui.MyScanner.*;
-
 import java.util.List;
+
+import static com.tobiasekman.ui.MyScanner.stringScanner;
 
 public class GenreManager {
 
@@ -29,19 +29,28 @@ public class GenreManager {
 
     public void showAlbumsByGenre() {
 
-        System.out.print("Genre: ");
-        Genre genre = genreDao.findByName(stringScanner());
+        try {
 
-        List<Album> albums = genre.getAlbums();
-        System.out.println("\n  - " + genre.getGenre() + " Albums -\n");
+            System.out.print("Genre: ");
+            Genre genre = genreDao.findByName(stringScanner());
 
-        for (Album album : albums) {
+            List<Album> albums = genre.getAlbums();
+            System.out.println("\n  - " + genre.getGenre() + " Albums -\n");
 
-            System.out.println("  " + album.getTitle() + ", " + album.getYear() +
-                    "\n" + "  " + album.getArtist().getName() + "\n" +
-                    "  " + album.getGenres() + "\n");
+            for (Album album : albums) {
+
+                System.out.println("  " + album.getTitle() + ", " + album.getYear() +
+                        "\n" + "  " + album.getArtist().getName() + "\n" +
+                        "  " + album.getGenres() + "\n");
+
+            }
+
+        } catch (Exception e) {
+
+            System.out.println("Couldn't find genre");
 
         }
+
 
     }
 }

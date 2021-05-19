@@ -4,9 +4,10 @@ import com.tobiasekman.model.ArtistDao;
 import com.tobiasekman.model.entities.Artist;
 import com.tobiasekman.model.entities.ArtistInfo;
 
-import static com.tobiasekman.ui.MyScanner.*;
-
 import java.util.List;
+
+import static com.tobiasekman.ui.MyScanner.intScanner;
+import static com.tobiasekman.ui.MyScanner.stringScanner;
 
 public class ArtistManager {
 
@@ -39,47 +40,63 @@ public class ArtistManager {
 
     public void updateArtist() {
 
-        showAllArtists();
+        try {
+            System.out.print("Artist to update: ");
+            Artist artist = artistDao.findByName(stringScanner());
+            System.out.print("Name: ");
+            artist.setName(stringScanner());
 
-        System.out.print("ID to update: ");
-        Artist artist = artistDao.findById(intScanner());
-        System.out.print("Name: ");
-        artist.setName(stringScanner());
+            artistDao.update(artist);
+        } catch (Exception e) {
+            System.out.println("Couldn't find artist");
+        }
 
-        artistDao.update(artist);
     }
 
     public void deleteArtist() {
+        try {
+            System.out.print("Artist to delete: ");
+            Artist artist = artistDao.findByName(stringScanner());
 
-        System.out.print("Artist to delete: ");
-        Artist artist = artistDao.findByName(stringScanner());
+            artistDao.delete(artist);
+        } catch (Exception e) {
+            System.out.println("Couldn't find artist");
+        }
 
-        artistDao.delete(artist);
 
     }
 
     public void showArtist() {
 
-        System.out.print("Name: ");
-        Artist artist = artistDao.findByName(stringScanner());
-        System.out.println("  " + artist.getName());
-        System.out.println("  Full name: " + artist.getArtistInfo().getFullName());
-        System.out.println("  Age: " + artist.getArtistInfo().getAge());
-        System.out.println("  " + artist.getArtistInfo().getBio());
+        try {
+            System.out.print("Name: ");
+            Artist artist = artistDao.findByName(stringScanner());
+            System.out.println("  " + artist.getName());
+            System.out.println("  Full name: " + artist.getArtistInfo().getFullName());
+            System.out.println("  Age: " + artist.getArtistInfo().getAge());
+            System.out.println("  " + artist.getArtistInfo().getBio());
+        } catch (Exception e) {
+            System.out.println("Couldn't find artist");
+        }
+
 
     }
 
     public void updateArtistBio() {
+        try {
+            System.out.print("Name: ");
+            Artist artist = artistDao.findByName(stringScanner());
 
-        System.out.print("Name: ");
-        Artist artist = artistDao.findByName(stringScanner());
+            System.out.print("New bio: ");
+            ArtistInfo bio = artist.getArtistInfo();
+            bio.setBio(stringScanner());
 
-        System.out.print("New bio: ");
-        ArtistInfo bio = artist.getArtistInfo();
-        bio.setBio(stringScanner());
+            artist.setArtistInfo(bio);
+            artistDao.update(artist);
+        } catch (Exception e) {
+            System.out.println("Couldn't find artist");
+        }
 
-        artist.setArtistInfo(bio);
-        artistDao.update(artist);
 
     }
 

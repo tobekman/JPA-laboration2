@@ -6,9 +6,11 @@ import com.tobiasekman.model.SongDao;
 import com.tobiasekman.model.entities.Album;
 import com.tobiasekman.model.entities.Artist;
 import com.tobiasekman.model.entities.Song;
+
 import java.util.List;
 
-import static com.tobiasekman.ui.MyScanner.*;
+import static com.tobiasekman.ui.MyScanner.intScanner;
+import static com.tobiasekman.ui.MyScanner.stringScanner;
 
 public class SongManager {
 
@@ -42,10 +44,18 @@ public class SongManager {
     }
 
     public void deleteSong() {
+        try {
 
-        System.out.print("Song title: ");
-        Song song = songDao.findByName(stringScanner());
-        songDao.delete(song);
+            System.out.print("Song title: ");
+            Song song = songDao.findByName(stringScanner());
+            songDao.delete(song);
+
+        } catch (Exception e) {
+
+            System.out.println("Couldn't find song");
+
+        }
+
     }
 
     public void showAllSongs() {
@@ -59,7 +69,13 @@ public class SongManager {
 
         System.out.print("Artist: ");
         List<Song> songs = songDao.findByArtist(stringScanner());
-        songs.forEach(s -> System.out.println("  " + s));
+
+        if (songs.size() < 1) {
+            System.out.println("Couldn't find any songs");
+        } else {
+            songs.forEach(s -> System.out.println("  " + s));
+        }
+
 
     }
 }
